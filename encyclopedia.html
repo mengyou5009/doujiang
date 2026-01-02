@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知豆百科 - 豆香传</title>
+    <meta name="description" content="专业豆浆健康知识科普，营养成分分析，健康功效解读，饮用指南">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&family=Oranienbaum&family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --soy-white: #F5F5DC;
+            --warm-beige: #FDF5E6;
+            --ancient-brown: #A67B5B;
+            --health-green: #8FBC8F;
+            --lemon-yellow: #FFFACD;
+            --sky-blue: #87CEEB;
+            --text-dark: #4A4A4A;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--soy-white);
+            color: var(--text-dark);
+        }
+        
+        .font-serif-cn {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .font-sans-cn {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        .hero-bg {
+            background-image: url('./resources/soybeans-nutrition.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(253, 245, 230, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-primary {
+            background-color: var(--ancient-brown);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #8B6B4B;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(166, 123, 91, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: var(--health-green);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7AA87A;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(143, 188, 143, 0.3);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nutrition-card {
+            background: linear-gradient(135deg, rgba(135, 206, 235, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 1px solid rgba(135, 206, 235, 0.2);
+        }
+        
+        .health-card {
+            background: linear-gradient(135deg, rgba(143, 188, 143, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 1px solid rgba(143, 188, 143, 0.2);
+        }
+        
+        .test-card {
+            background: linear-gradient(135deg, rgba(255, 250, 205, 0.3) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 1px solid rgba(255, 250, 205, 0.5);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background-color: var(--ancient-brown);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .quiz-container {
+            display: none;
+        }
+        
+        .quiz-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .quiz-option {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .quiz-option:hover {
+            background-color: rgba(143, 188, 143, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .quiz-option.selected {
+            background-color: var(--health-green);
+            color: white;
+        }
+        
+        .progress-bar {
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <img src="./resources/logo.png" alt="豆香传" class="h-10 w-10">
+                    <span class="font-serif-cn text-2xl font-bold text-ancient-brown">豆香传</span>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="home.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">首页</a>
+                    <a href="culture.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">文化溯源</a>
+                    <a href="encyclopedia.html" class="nav-link active font-medium text-ancient-brown">知豆百科</a>
+                    <a href="workshop.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">巧手工坊</a>
+                    <a href="about.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">关于我们</a>
+                </div>
+                
+                <!-- User Area -->
+                <div class="flex items-center space-x-4">
+                    <!-- Language Switcher -->
+                    <div class="flex items-center space-x-1">
+                        <button class="px-2 py-1 text-sm font-medium text-ancient-brown hover:bg-white hover:bg-opacity-50 rounded-md transition-colors">
+                            简体
+                        </button>
+                        <button class="px-2 py-1 text-sm font-medium text-gray-500 hover:text-ancient-brown hover:bg-white hover:bg-opacity-30 rounded-md transition-colors">
+                            EN
+                        </button>
+                    </div>
+                    
+                    <!-- Login Button -->
+                    <a href="index.html" class="btn-primary px-4 py-2 rounded-lg font-medium text-sm">
+                        登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-96 flex items-center justify-center relative pt-16">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div class="relative z-10 text-center px-4">
+            <h1 class="font-serif-cn text-4xl md:text-5xl font-bold text-white mb-4">
+                知豆百科
+            </h1>
+            <p class="font-sans-cn text-lg md:text-xl text-white text-opacity-90 mb-2">
+                科学解读豆浆营养，专业守护健康生活
+            </p>
+            <p class="font-sans-cn text-base text-white text-opacity-80">
+                让每一滴豆浆都成为您健康生活的智慧选择
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <!-- Nutrition Database -->
+        <section class="mb-20">
+            <h2 class="font-serif-cn text-3xl font-bold text-sky-blue text-center mb-16">
+                营养数据库
+            </h2>
+            
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="nutrition-card rounded-xl p-8">
+                    <h3 class="font-serif-cn text-2xl font-semibold text-sky-blue mb-6">
+                        三大豆类营养成分对比
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-6">
+                        不同种类的豆类具有不同的营养特点。黄豆蛋白质含量高，黑豆富含花青素，青豆则含有丰富的维生素和矿物质。
+                    </p>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center justify-between p-3 bg-white bg-opacity-50 rounded-lg">
+                            <span class="font-medium">黄豆</span>
+                            <span class="text-ancient-brown">蛋白质之王</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-white bg-opacity-50 rounded-lg">
+                            <span class="font-medium">黑豆</span>
+                            <span class="text-health-green">抗氧化明星</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-white bg-opacity-50 rounded-lg">
+                            <span class="font-medium">青豆</span>
+                            <span class="text-sky-blue">维生素宝库</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg">
+                    <canvas id="nutritionChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Health Topics -->
+        <section class="mb-20">
+            <h2 class="font-serif-cn text-3xl font-bold text-health-green text-center mb-16">
+                健康专题
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="health-card rounded-xl p-6 card-hover cursor-pointer" onclick="expandHealthTopic(this)">
+                    <div class="w-16 h-16 bg-health-green rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-serif-cn text-xl font-semibold text-health-green text-center mb-4">
+                        心血管健康
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        豆浆中的大豆异黄酮和不饱和脂肪酸有助于降低胆固醇，保护心血管健康...
+                    </p>
+                    <div class="health-details hidden">
+                        <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                            研究表明，每天饮用豆浆可以：
+                        </p>
+                        <ul class="text-sm text-gray-600 space-y-2 mb-4">
+                            <li>• 降低LDL（坏胆固醇）水平</li>
+                            <li>• 提高HDL（好胆固醇）水平</li>
+                            <li>• 减少心血管疾病风险</li>
+                            <li>• 改善血管弹性</li>
+                        </ul>
+                        <p class="text-xs text-health-green">
+                            建议：每天1-2杯，持续3个月以上可见效果
+                        </p>
+                    </div>
+                    <button class="text-health-green hover:text-health-green font-medium text-sm w-full text-center">
+                        查看详情 →
+                    </button>
+                </div>
+                
+                <div class="health-card rounded-xl p-6 card-hover cursor-pointer" onclick="expandHealthTopic(this)">
+                    <div class="w-16 h-16 bg-sky-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-serif-cn text-xl font-semibold text-sky-blue text-center mb-4">
+                        乳糖不耐适应
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        豆浆是牛奶的完美替代品，富含植物蛋白且不含乳糖...
+                    </p>
+                    <div class="health-details hidden">
+                        <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                            对于乳糖不耐受人群，豆浆提供：
+                        </p>
+                        <ul class="text-sm text-gray-600 space-y-2 mb-4">
+                            <li>• 优质植物蛋白（每100ml含3.5g）</li>
+                            <li>• 丰富的钙质（每100ml含15mg）</li>
+                            <li>• 零乳糖，零胆固醇</li>
+                            <li>• 易消化吸收</li>
+                        </ul>
+                        <p class="text-xs text-sky-blue">
+                            适合：乳糖不耐受者、素食主义者、牛奶过敏者
+                        </p>
+                    </div>
+                    <button class="text-sky-blue hover:text-sky-blue font-medium text-sm w-full text-center">
+                        查看详情 →
+                    </button>
+                </div>
+                
+                <div class="health-card rounded-xl p-6 card-hover cursor-pointer" onclick="expandHealthTopic(this)">
+                    <div class="w-16 h-16 bg-lemon-yellow rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-serif-cn text-xl font-semibold text-gray-700 text-center mb-4">
+                        体质调理
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        不同体质的人群适合不同类型的豆浆，科学饮用才能达到最佳效果...
+                    </p>
+                    <div class="health-details hidden">
+                        <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                            根据中医体质学说：
+                        </p>
+                        <ul class="text-sm text-gray-600 space-y-2 mb-4">
+                            <li>• 阳虚体质：适合红枣豆浆</li>
+                            <li>• 阴虚体质：适合百合豆浆</li>
+                            <li>• 气虚体质：适合黄芪豆浆</li>
+                            <li>• 湿热体质：适合绿豆豆浆</li>
+                        </ul>
+                        <p class="text-xs text-gray-600">
+                            建议：根据季节和个人体质调整配方
+                        </p>
+                    </div>
+                    <button class="text-gray-700 hover:text-gray-700 font-medium text-sm w-full text-center">
+                        查看详情 →
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Test -->
+        <section class="mb-20">
+            <h2 class="font-serif-cn text-3xl font-bold text-ancient-brown text-center mb-16">
+                体质测试
+            </h2>
+            
+            <div class="max-w-3xl mx-auto test-card rounded-xl p-8">
+                <div class="text-center mb-8">
+                    <h3 class="font-serif-cn text-2xl font-semibold text-ancient-brown mb-4">
+                        测测你的体质适合哪种豆浆？
+                    </h3>
+                    <p class="text-gray-600">
+                        通过简单的5个问题，为你推荐最适合的豆浆配方
+                    </p>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="mb-8">
+                    <div class="flex justify-between text-sm text-gray-600 mb-2">
+                        <span>进度</span>
+                        <span id="progressText">0/5</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div id="progressBar" class="progress-bar bg-health-green h-2 rounded-full"></div>
+                    </div>
+                </div>
+                
+                <!-- Quiz Questions -->
+                <div id="quizContainer">
+                    <!-- Question 1 -->
+                    <div class="quiz-container active" id="question1">
+                        <h4 class="font-semibold text-lg text-ancient-brown mb-6">
+                            1. 你通常的体温感受是？
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="cold" onclick="selectOption(this, 'cold')">
+                                <span>经常感觉手脚冰冷</span>
+                            </div>
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="normal" onclick="selectOption(this, 'normal')">
+                                <span>体温适中，比较舒适</span>
+                            </div>
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="hot" onclick="selectOption(this, 'hot')">
+                                <span>容易感觉燥热</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary px-6 py-2 rounded-lg mt-6 opacity-50 cursor-not-allowed" id="nextBtn1" onclick="nextQuestion(1)" disabled>
+                            下一题
+                        </button>
+                    </div>
+                    
+                    <!-- Question 2 -->
+                    <div class="quiz-container" id="question2">
+                        <h4 class="font-semibold text-lg text-ancient-brown mb-6">
+                            2. 你的精神状态通常是？
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="tired" onclick="selectOption(this, 'tired')">
+                                <span>容易疲劳，精力不足</span>
+                            </div>
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="energetic" onclick="selectOption(this, 'energetic')">
+                                <span>精力充沛，活力满满</span>
+                            </div>
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="anxious" onclick="selectOption(this, 'anxious')">
+                                <span>容易焦虑，情绪波动</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary px-6 py-2 rounded-lg mt-6 opacity-50 cursor-not-allowed" id="nextBtn2" onclick="nextQuestion(2)" disabled>
+                            下一题
+                        </button>
+                    </div>
+                    
+                    <!-- Question 3 -->
+                    <div class="quiz-container" id="question3">
+                        <h4 class="font-semibold text-lg text-ancient-brown mb-6">
+                            3. 你的睡眠质量如何？
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="poor" onclick="selectOption(this, 'poor')">
+                                <span>睡眠浅，容易醒来</span>
+                            </div>
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="good" onclick="selectOption(this, 'good')">
+                                <span>睡眠良好，一觉到天亮</span>
+                            </div>
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="dreamy" onclick="selectOption(this, 'dreamy')">
+                                <span>多梦，醒来仍感疲惫</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary px-6 py-2 rounded-lg mt-6 opacity-50 cursor-not-allowed" id="nextBtn3" onclick="nextQuestion(3)" disabled>
+                            下一题
+                        </button>
+                    </div>
+                    
+                    <!-- Question 4 -->
+                    <div class="quiz-container" id="question4">
+                        <h4 class="font-semibold text-lg text-ancient-brown mb-6">
+                            4. 你的消化情况？
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="weak" onclick="selectOption(this, 'weak')">
+                                <span>消化功能较弱，容易胀气</span>
+                            </div>
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="strong" onclick="selectOption(this, 'strong')">
+                                <span>消化良好，食欲正常</span>
+                            </div>
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="sensitive" onclick="selectOption(this, 'sensitive')">
+                                <span>肠胃敏感，容易不适</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary px-6 py-2 rounded-lg mt-6 opacity-50 cursor-not-allowed" id="nextBtn4" onclick="nextQuestion(4)" disabled>
+                            下一题
+                        </button>
+                    </div>
+                    
+                    <!-- Question 5 -->
+                    <div class="quiz-container" id="question5">
+                        <h4 class="font-semibold text-lg text-ancient-brown mb-6">
+                            5. 你喜欢的口味？
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="sweet" onclick="selectOption(this, 'sweet')">
+                                <span>偏爱甜味</span>
+                            </div>
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="salty" onclick="selectOption(this, 'salty')">
+                                <span>偏爱咸味</span>
+                            </div>
+                            <div class="quiz-option p-4 rounded-lg border border-gray-200" data-value="plain" onclick="selectOption(this, 'plain')">
+                                <span>喜欢原味</span>
+                            </div>
+                        </div>
+                        <button class="btn-secondary px-6 py-2 rounded-lg mt-6 opacity-50 cursor-not-allowed" id="nextBtn5" onclick="showResult()" disabled>
+                            查看结果
+                        </button>
+                    </div>
+                    
+                    <!-- Result -->
+                    <div class="quiz-container" id="result">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-health-green rounded-full flex items-center justify-center mx-auto mb-6">
+                                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="font-serif-cn text-2xl font-semibold text-ancient-brown mb-4">
+                                你的专属豆浆配方
+                            </h3>
+                            <div id="resultContent" class="bg-white rounded-lg p-6 mb-6">
+                                <!-- Result will be inserted here -->
+                            </div>
+                            <div class="space-y-4">
+                                <button class="btn-primary px-8 py-3 rounded-lg font-medium" onclick="restartQuiz()">
+                                    重新测试
+                                </button>
+                                <div>
+                                    <button class="btn-secondary px-6 py-2 rounded-lg font-medium text-sm" onclick="showLoginPrompt()">
+                                        登录保存结果
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expert Q&A -->
+        <section class="mb-16">
+            <h2 class="font-serif-cn text-3xl font-bold text-ancient-brown text-center mb-16">
+                专家问答
+            </h2>
+            
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="nutrition-card rounded-xl p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-health-green rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold text-sm">营</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-ancient-brown mb-2">
+                                问：豆浆和牛奶哪个更有营养？
+                            </h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-3">
+                                答：豆浆和牛奶各有优势。豆浆富含植物蛋白、异黄酮，零胆固醇，适合素食者和乳糖不耐受人群。牛奶含钙量更高，含有优质动物蛋白和B族维生素。建议根据个人体质和需求选择，也可以搭配饮用。
+                            </p>
+                            <div class="text-xs text-gray-500">
+                                营养学专家 王医生 | 回答时间：2025-01-15
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nutrition-card rounded-xl p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-sky-blue rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-bold text-sm">中</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-ancient-brown mb-2">
+                                问：什么时候喝豆浆效果最好？
+                            </h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-3">
+                                答：从中医角度看，早晨7-9点是胃经当令时段，此时饮用豆浆最容易被吸收。避免空腹饮用，建议搭配主食。晚上饮用应适量，以免影响睡眠。体质偏寒者可加入生姜、红枣等温性食材。
+                            </p>
+                            <div class="text-xs text-gray-500">
+                                中医专家 李医师 | 回答时间：2025-01-12
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nutrition-card rounded-xl p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-lemon-yellow rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-gray-700 font-bold text-sm">美</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-ancient-brown mb-2">
+                                问：豆浆有美容养颜的效果吗？
+                            </h4>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-3">
+                                答：豆浆确实具有美容养颜效果。大豆异黄酮有类似雌激素的作用，有助于保持皮肤弹性，延缓衰老。维生素E是天然抗氧化剂，能保护皮肤免受自由基伤害。建议长期坚持饮用，配合健康作息。
+                            </p>
+                            <div class="text-xs text-gray-500">
+                                美容专家 张医师 | 回答时间：2025-01-10
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button class="btn-primary px-6 py-3 rounded-lg font-medium" onclick="showLoginPrompt()">
+                        提问专家
+                    </button>
+                    <p class="text-sm text-gray-600 mt-3">
+                        登录后可向专家提问，获取个性化健康建议
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-ancient-brown text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <img src="./resources/logo.png" alt="豆香传" class="h-8 w-8 opacity-80">
+                <span class="font-serif-cn text-xl font-semibold">豆香传</span>
+            </div>
+            <p class="text-sm opacity-80">
+                © 2025 豆香传 (Bean Aroma Legacy). 保留所有权利。
+            </p>
+            <p class="text-xs opacity-60 mt-2">
+                一杯豆浆，敬过往，连世界，创未来
+            </p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

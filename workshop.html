@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>巧手工坊 - 豆香传</title>
+    <meta name="description" content="DIY豆浆制作教程，创意食谱分享，用户作品展示平台">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&family=Oranienbaum&family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --soy-white: #F5F5DC;
+            --warm-beige: #FDF5E6;
+            --ancient-brown: #A67B5B;
+            --health-green: #8FBC8F;
+            --lemon-yellow: #FFFACD;
+            --sky-blue: #87CEEB;
+            --text-dark: #4A4A4A;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--soy-white);
+            color: var(--text-dark);
+        }
+        
+        .font-serif-cn {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .font-sans-cn {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        .hero-bg {
+            background-image: url('./resources/workshop-diy.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(253, 245, 230, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-primary {
+            background-color: var(--ancient-brown);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #8B6B4B;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(166, 123, 91, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: var(--health-green);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7AA87A;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(143, 188, 143, 0.3);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tutorial-card {
+            background: linear-gradient(135deg, rgba(255, 250, 205, 0.3) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 1px solid rgba(255, 250, 205, 0.5);
+        }
+        
+        .recipe-card {
+            background: linear-gradient(135deg, rgba(143, 188, 143, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 1px solid rgba(143, 188, 143, 0.2);
+        }
+        
+        .work-card {
+            background: linear-gradient(135deg, rgba(253, 245, 230, 0.8) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 1px solid rgba(166, 123, 91, 0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background-color: var(--ancient-brown);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--health-green);
+            color: white;
+        }
+        
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 1rem;
+        }
+        
+        @media (min-width: 640px) {
+            .masonry-grid {
+                column-count: 2;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .masonry-grid {
+                column-count: 3;
+            }
+        }
+        
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1rem;
+        }
+        
+        .like-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .like-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .like-btn.liked {
+            color: #ef4444;
+        }
+        
+        .challenge-progress {
+            background: linear-gradient(90deg, var(--health-green) 0%, var(--sky-blue) 100%);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <img src="./resources/logo.png" alt="豆香传" class="h-10 w-10">
+                    <span class="font-serif-cn text-2xl font-bold text-ancient-brown">豆香传</span>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="home.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">首页</a>
+                    <a href="culture.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">文化溯源</a>
+                    <a href="encyclopedia.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">知豆百科</a>
+                    <a href="workshop.html" class="nav-link active font-medium text-ancient-brown">巧手工坊</a>
+                    <a href="about.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">关于我们</a>
+                </div>
+                
+                <!-- User Area -->
+                <div class="flex items-center space-x-4">
+                    <!-- Language Switcher -->
+                    <div class="flex items-center space-x-1">
+                        <button class="px-2 py-1 text-sm font-medium text-ancient-brown hover:bg-white hover:bg-opacity-50 rounded-md transition-colors">
+                            简体
+                        </button>
+                        <button class="px-2 py-1 text-sm font-medium text-gray-500 hover:text-ancient-brown hover:bg-white hover:bg-opacity-30 rounded-md transition-colors">
+                            EN
+                        </button>
+                    </div>
+                    
+                    <!-- Login Button -->
+                    <a href="index.html" class="btn-primary px-4 py-2 rounded-lg font-medium text-sm">
+                        登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-96 flex items-center justify-center relative pt-16">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div class="relative z-10 text-center px-4">
+            <h1 class="font-serif-cn text-4xl md:text-5xl font-bold text-white mb-4">
+                巧手工坊
+            </h1>
+            <p class="font-sans-cn text-lg md:text-xl text-white text-opacity-90 mb-2">
+                创意无限，豆浆百变
+            </p>
+            <p class="font-sans-cn text-base text-white text-opacity-80">
+                从传统到创新，探索豆浆的无限可能
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <!-- Tutorial Section -->
+        <section class="mb-20">
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="font-serif-cn text-3xl font-bold text-lemon-yellow">
+                    教程专区
+                </h2>
+                <div class="flex space-x-2">
+                    <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-700" onclick="filterTutorials('all')">
+                        全部
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-700" onclick="filterTutorials('basic')">
+                        基础款
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-700" onclick="filterTutorials('creative')">
+                        创新款
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-700" onclick="filterTutorials('derivative')">
+                        衍生品
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Basic Tutorial -->
+                <div class="tutorial-card rounded-xl overflow-hidden card-hover tutorial-item" data-category="basic">
+                    <div class="h-48 bg-gradient-to-br from-lemon-yellow to-health-green opacity-80 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <svg class="w-16 h-16 mx-auto mb-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            <h3 class="font-serif-cn text-xl font-semibold">经典黄豆豆浆</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 bg-health-green bg-opacity-20 text-health-green text-xs font-medium rounded-full">
+                                基础款
+                            </span>
+                            <span class="text-xs text-gray-500">⏱️ 30分钟</span>
+                        </div>
+                        <h4 class="font-semibold text-ancient-brown mb-2">传统石磨豆浆制作</h4>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                            从选豆、泡豆到磨豆、煮浆，掌握传统豆浆制作的每一个关键步骤...
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+                            <span>难度：⭐⭐</span>
+                            <span>👥 1.2k 学习</span>
+                        </div>
+                        <button class="btn-primary w-full py-2 rounded-lg font-medium text-sm" onclick="showTutorialDetail('basic')">
+                            开始学习
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Creative Tutorial -->
+                <div class="tutorial-card rounded-xl overflow-hidden card-hover tutorial-item" data-category="creative">
+                    <div class="h-48 bg-gradient-to-br from-health-green to-sky-blue opacity-80 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <svg class="w-16 h-16 mx-auto mb-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                            </svg>
+                            <h3 class="font-serif-cn text-xl font-semibold">五彩豆浆</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 bg-sky-blue bg-opacity-20 text-sky-blue text-xs font-medium rounded-full">
+                                创新款
+                            </span>
+                            <span class="text-xs text-gray-500">⏱️ 45分钟</span>
+                        </div>
+                        <h4 class="font-semibold text-ancient-brown mb-2">五谷豆浆创意配方</h4>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                            用五种谷物制作营养丰富的创意豆浆，色彩缤纷，口感层次丰富...
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+                            <span>难度：⭐⭐⭐</span>
+                            <span>👥 856 学习</span>
+                        </div>
+                        <button class="btn-primary w-full py-2 rounded-lg font-medium text-sm" onclick="showTutorialDetail('creative')">
+                            开始学习
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Derivative Tutorial -->
+                <div class="tutorial-card rounded-xl overflow-hidden card-hover tutorial-item" data-category="derivative">
+                    <div class="h-48 bg-gradient-to-br from-sky-blue to-lemon-yellow opacity-80 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <svg class="w-16 h-16 mx-auto mb-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v2.286a2 2 0 00.586 1.414l2.414 2.414A2 2 0 0119 12.414V16l-1 1H8l-1-1v-3.586a2 2 0 01.586-1.414l2.414-2.414A2 2 0 0011 7.286V5l-1-1z"></path>
+                            </svg>
+                            <h3 class="font-serif-cn text-xl font-semibold">豆浆面膜</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 bg-lemon-yellow bg-opacity-50 text-gray-700 text-xs font-medium rounded-full">
+                                衍生品
+                            </span>
+                            <span class="text-xs text-gray-500">⏱️ 20分钟</span>
+                        </div>
+                        <h4 class="font-semibold text-ancient-brown mb-2">天然豆浆面膜制作</h4>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                            利用豆浆的天然营养成分，制作美容养颜面膜，让肌肤享受大豆的滋养...
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+                            <span>难度：⭐</span>
+                            <span>👥 2.1k 学习</span>
+                        </div>
+                        <button class="btn-primary w-full py-2 rounded-lg font-medium text-sm" onclick="showTutorialDetail('derivative')">
+                            开始学习
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- More tutorials... -->
+                <div class="tutorial-card rounded-xl overflow-hidden card-hover tutorial-item" data-category="basic">
+                    <div class="h-48 bg-gradient-to-br from-ancient-brown to-health-green opacity-80 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <svg class="w-16 h-16 mx-auto mb-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                            <h3 class="font-serif-cn text-xl font-semibold">黑豆养生豆浆</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 bg-health-green bg-opacity-20 text-health-green text-xs font-medium rounded-full">
+                                基础款
+                            </span>
+                            <span class="text-xs text-gray-500">⏱️ 35分钟</span>
+                        </div>
+                        <h4 class="font-semibold text-ancient-brown mb-2">养生黑豆豆浆</h4>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                            黑豆富含花青素，具有强大的抗氧化功效，是养生保健的绝佳选择...
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+                            <span>难度：⭐⭐</span>
+                            <span>👥 1.8k 学习</span>
+                        </div>
+                        <button class="btn-primary w-full py-2 rounded-lg font-medium text-sm" onclick="showTutorialDetail('basic')">
+                            开始学习
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tutorial-card rounded-xl overflow-hidden card-hover tutorial-item" data-category="creative">
+                    <div class="h-48 bg-gradient-to-br from-health-green to-ancient-brown opacity-80 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <svg class="w-16 h-16 mx-auto mb-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+                            </svg>
+                            <h3 class="font-serif-cn text-xl font-semibold">豆浆鸡尾酒</h3>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-3 py-1 bg-sky-blue bg-opacity-20 text-sky-blue text-xs font-medium rounded-full">
+                                创新款
+                            </span>
+                            <span class="text-xs text-gray-500">⏱️ 25分钟</span>
+                        </div>
+                        <h4 class="font-semibold text-ancient-brown mb-2">创意豆浆调酒</h4>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                            将豆浆与鸡尾酒完美结合，创造出独特的口感体验，适合派对聚会...
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+                            <span>难度：⭐⭐⭐⭐</span>
+                            <span>👥 543 学习</span>
+                        </div>
+                        <button class="btn-primary w-full py-2 rounded-lg font-medium text-sm" onclick="showTutorialDetail('creative')">
+                            开始学习
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Works Gallery -->
+        <section class="mb-20">
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="font-serif-cn text-3xl font-bold text-health-green">
+                    作品展示墙
+                </h2>
+                <div class="flex items-center space-x-4">
+                    <button class="btn-secondary px-4 py-2 rounded-lg font-medium text-sm" onclick="showLoginPrompt()">
+                        分享我的作品
+                    </button>
+                    <div class="flex space-x-2">
+                        <button class="filter-btn active px-3 py-1 rounded-lg text-sm font-medium bg-gray-100 text-gray-700" onclick="filterWorks('all')">
+                            全部
+                        </button>
+                        <button class="filter-btn px-3 py-1 rounded-lg text-sm font-medium bg-gray-100 text-gray-700" onclick="filterWorks('latest')">
+                            最新
+                        </button>
+                        <button class="filter-btn px-3 py-1 rounded-lg text-sm font-medium bg-gray-100 text-gray-700" onclick="filterWorks('popular')">
+                            热门
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="masonry-grid">
+                <!-- Work Item 1 -->
+                <div class="masonry-item work-card rounded-xl overflow-hidden card-hover">
+                    <div class="h-48 bg-gradient-to-br from-lemon-yellow to-health-green opacity-80"></div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-semibold text-ancient-brown">五谷豆浆</h4>
+                            <div class="flex items-center space-x-2">
+                                <button class="like-btn flex items-center space-x-1 text-gray-500 hover:text-red-500" onclick="toggleLike(this)">
+                                    <span>❤️</span>
+                                    <span>23</span>
+                                </button>
+                                <button class="text-gray-500 hover:text-ancient-brown" onclick="showLoginPrompt()">
+                                    💬 5
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">by 豆浆爱好者小王</p>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            用黄豆、黑豆、红豆、绿豆、花生五种食材制作的五谷豆浆，营养丰富，口感层次分明...
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Work Item 2 -->
+                <div class="masonry-item work-card rounded-xl overflow-hidden card-hover">
+                    <div class="h-32 bg-gradient-to-br from-health-green to-sky-blue opacity-80"></div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-semibold text-ancient-brown">豆浆面膜</h4>
+                            <div class="flex items-center space-x-2">
+                                <button class="like-btn flex items-center space-x-1 text-gray-500 hover:text-red-500" onclick="toggleLike(this)">
+                                    <span>❤️</span>
+                                    <span>18</span>
+                                </button>
+                                <button class="text-gray-500 hover:text-ancient-brown" onclick="showLoginPrompt()">
+                                    💬 3
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">by 养生达人李姐</p>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            自制豆浆面膜，肌肤变得光滑细腻，天然无添加，值得推荐！
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Work Item 3 -->
+                <div class="masonry-item work-card rounded-xl overflow-hidden card-hover">
+                    <div class="h-56 bg-gradient-to-br from-sky-blue to-lemon-yellow opacity-80"></div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-semibold text-ancient-brown">创意豆花</h4>
+                            <div class="flex items-center space-x-2">
+                                <button class="like-btn flex items-center space-x-1 text-gray-500 hover:text-red-500" onclick="toggleLike(this)">
+                                    <span>❤️</span>
+                                    <span>31</span>
+                                </button>
+                                <button class="text-gray-500 hover:text-ancient-brown" onclick="showLoginPrompt()">
+                                    💬 8
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">by 美食创作者小张</p>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            用豆浆制作的创意豆花，加入了水果和坚果，既美味又健康，颜值也很高！
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Work Item 4 -->
+                <div class="masonry-item work-card rounded-xl overflow-hidden card-hover">
+                    <div class="h-40 bg-gradient-to-br from-ancient-brown to-health-green opacity-80"></div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-semibold text-ancient-brown">传统石磨</h4>
+                            <div class="flex items-center space-x-2">
+                                <button class="like-btn flex items-center space-x-1 text-gray-500 hover:text-red-500" onclick="toggleLike(this)">
+                                    <span>❤️</span>
+                                    <span>42</span>
+                                </button>
+                                <button class="text-gray-500 hover:text-ancient-brown" onclick="showLoginPrompt()">
+                                    💬 12
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">by 文化传承者老陈</p>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            复原传统石磨制作豆浆的工艺，保留了最原始的风味，文化传承从我做起。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Work Item 5 -->
+                <div class="masonry-item work-card rounded-xl overflow-hidden card-hover">
+                    <div class="h-36 bg-gradient-to-br from-health-green to-ancient-brown opacity-80"></div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-semibold text-ancient-brown">豆浆冰淇淋</h4>
+                            <div class="flex items-center space-x-2">
+                                <button class="like-btn flex items-center space-x-1 text-gray-500 hover:text-red-500" onclick="toggleLike(this)">
+                                    <span>❤️</span>
+                                    <span>27</span>
+                                </button>
+                                <button class="text-gray-500 hover:text-ancient-brown" onclick="showLoginPrompt()">
+                                    💬 6
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">by 甜品师小周</p>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            用豆浆制作的低糖冰淇淋，健康又美味，夏天必备！
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Work Item 6 -->
+                <div class="masonry-item work-card rounded-xl overflow-hidden card-hover">
+                    <div class="h-44 bg-gradient-to-br from-lemon-yellow to-sky-blue opacity-80"></div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-semibold text-ancient-brown">豆浆拿铁</h4>
+                            <div class="flex items-center space-x-2">
+                                <button class="like-btn flex items-center space-x-1 text-gray-500 hover:text-red-500" onclick="toggleLike(this)">
+                                    <span>❤️</span>
+                                    <span>35</span>
+                                </button>
+                                <button class="text-gray-500 hover:text-ancient-brown" onclick="showLoginPrompt()">
+                                    💬 9
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-2">by 咖啡师阿明</p>
+                        <p class="text-sm text-gray-700 leading-relaxed">
+                            豆浆与咖啡的完美结合，创造出独特的豆浆拿铁，中西合璧的创新。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Challenge Section -->
+        <section class="mb-16">
+            <h2 class="font-serif-cn text-3xl font-bold text-ancient-brown text-center mb-12">
+                本周挑战
+            </h2>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="recipe-card rounded-xl p-8">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-health-green rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-serif-cn text-2xl font-semibold text-ancient-brown mb-2">
+                            解锁五谷豆浆
+                        </h3>
+                        <p class="text-gray-600 mb-6">
+                            用五种以上的谷物制作创意豆浆，分享你的独特配方
+                        </p>
+                    </div>
+                    
+                    <!-- Challenge Progress -->
+                    <div class="mb-8">
+                        <div class="flex justify-between text-sm text-gray-600 mb-2">
+                            <span>挑战进度</span>
+                            <span>已有 127 人完成</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div class="challenge-progress h-3 rounded-full" style="width: 68%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Challenge Details -->
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h4 class="font-semibold text-ancient-brown mb-3">挑战要求：</h4>
+                            <ul class="text-sm text-gray-600 space-y-2">
+                                <li>• 使用5种以上不同谷物</li>
+                                <li>• 分享制作过程和配方</li>
+                                <li>• 上传成品照片</li>
+                                <li>• 描述口感和特色</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-ancient-brown mb-3">奖励内容：</h4>
+                            <ul class="text-sm text-gray-600 space-y-2">
+                                <li>• 50积分奖励</li>
+                                <li>• "创意大师"徽章</li>
+                                <li>• 作品首页推荐</li>
+                                <li>• 专属食谱模板</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button class="btn-secondary px-8 py-3 rounded-lg font-medium text-lg" onclick="showLoginPrompt()">
+                            接受挑战
+                        </button>
+                        <p class="text-sm text-gray-600 mt-3">
+                            登录后参与挑战，赢取丰厚奖励
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-ancient-brown text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <img src="./resources/logo.png" alt="豆香传" class="h-8 w-8 opacity-80">
+                <span class="font-serif-cn text-xl font-semibold">豆香传</span>
+            </div>
+            <p class="text-sm opacity-80">
+                © 2025 豆香传 (Bean Aroma Legacy). 保留所有权利。
+            </p>
+            <p class="text-xs opacity-60 mt-2">
+                一杯豆浆，敬过往，连世界，创未来
+            </p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

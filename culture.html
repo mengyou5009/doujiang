@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文化溯源 - 豆香传</title>
+    <meta name="description" content="探索豆浆的历史文化，从西汉刘安传说到现代工业化，了解豆浆在世界各地的演变">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&family=Oranienbaum&family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --soy-white: #F5F5DC;
+            --warm-beige: #FDF5E6;
+            --ancient-brown: #A67B5B;
+            --health-green: #8FBC8F;
+            --lemon-yellow: #FFFACD;
+            --sky-blue: #87CEEB;
+            --text-dark: #4A4A4A;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--soy-white);
+            color: var(--text-dark);
+        }
+        
+        .font-serif-cn {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        .font-sans-cn {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        .hero-bg {
+            background-image: url('./resources/culture-timeline.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(253, 245, 230, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-primary {
+            background-color: var(--ancient-brown);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #8B6B4B;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(166, 123, 91, 0.3);
+        }
+        
+        .timeline-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--ancient-brown), var(--health-green));
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .timeline-item.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: 55%;
+            text-align: right;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 55%;
+            text-align: left;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            background: var(--ancient-brown);
+            border: 4px solid var(--warm-beige);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .timeline-marker:hover {
+            background: var(--health-green);
+            transform: translateX(-50%) scale(1.2);
+        }
+        
+        .timeline-marker.active {
+            background: var(--health-green);
+            transform: translateX(-50%) scale(1.3);
+            box-shadow: 0 0 20px rgba(143, 188, 143, 0.5);
+        }
+        
+        .timeline-content {
+            background: var(--warm-beige);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .timeline-year {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--ancient-brown);
+            margin-bottom: 10px;
+        }
+        
+        .timeline-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+        
+        .timeline-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .timeline-details {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(166, 123, 91, 0.2);
+        }
+        
+        .timeline-details.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .region-card {
+            background: linear-gradient(135deg, var(--warm-beige) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 1px solid rgba(166, 123, 91, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .region-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background-color: var(--ancient-brown);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--ancient-brown);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-to-top:hover {
+            background: var(--health-green);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <img src="./resources/logo.png" alt="豆香传" class="h-10 w-10">
+                    <span class="font-serif-cn text-2xl font-bold text-ancient-brown">豆香传</span>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="home.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">首页</a>
+                    <a href="culture.html" class="nav-link active font-medium text-ancient-brown">文化溯源</a>
+                    <a href="encyclopedia.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">知豆百科</a>
+                    <a href="workshop.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">巧手工坊</a>
+                    <a href="about.html" class="nav-link font-medium text-gray-700 hover:text-ancient-brown">关于我们</a>
+                </div>
+                
+                <!-- User Area -->
+                <div class="flex items-center space-x-4">
+                    <!-- Language Switcher -->
+                    <div class="flex items-center space-x-1">
+                        <button class="px-2 py-1 text-sm font-medium text-ancient-brown hover:bg-white hover:bg-opacity-50 rounded-md transition-colors">
+                            简体
+                        </button>
+                        <button class="px-2 py-1 text-sm font-medium text-gray-500 hover:text-ancient-brown hover:bg-white hover:bg-opacity-30 rounded-md transition-colors">
+                            EN
+                        </button>
+                    </div>
+                    
+                    <!-- Login Button -->
+                    <a href="index.html" class="btn-primary px-4 py-2 rounded-lg font-medium text-sm">
+                        登录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-96 flex items-center justify-center relative pt-16">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="relative z-10 text-center px-4">
+            <h1 class="font-serif-cn text-4xl md:text-5xl font-bold text-white mb-4">
+                文化溯源
+            </h1>
+            <p class="font-sans-cn text-lg md:text-xl text-white text-opacity-90 mb-2">
+                穿越千年时光，探寻豆浆的文化根脉
+            </p>
+            <p class="font-sans-cn text-base text-white text-opacity-80">
+                从西汉石磨到现代工厂，见证一杯豆浆的文明传承
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <!-- Timeline Section -->
+        <section class="mb-20">
+            <h2 class="font-serif-cn text-3xl font-bold text-ancient-brown text-center mb-16">
+                时光长廊
+            </h2>
+            
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                
+                <!-- Timeline Item 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker" data-year="西汉"></div>
+                    <div class="timeline-content" onclick="toggleTimelineDetails(this)">
+                        <div class="timeline-year">公元前164年</div>
+                        <h3 class="timeline-title font-serif-cn">刘安发明豆浆</h3>
+                        <p class="timeline-description">
+                            淮南王刘安在八公山炼丹时，偶然将黄豆磨碎过滤，加入卤水，意外发明了豆浆和豆腐。
+                        </p>
+                        <div class="timeline-details">
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                据《本草纲目》记载："豆浆，利水下气，制诸风热，解诸毒。"刘安的发明不仅创造了美味的饮品，更为后世留下了宝贵的健康财富。这一偶然的发现，开启了中国两千多年的豆浆文化史。
+                            </p>
+                            <div class="mt-4 text-xs text-ancient-brown">
+                                参考资料：《本草纲目》、《淮南子》
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Timeline Item 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker" data-year="唐代"></div>
+                    <div class="timeline-content" onclick="toggleTimelineDetails(this)">
+                        <div class="timeline-year">公元618-907年</div>
+                        <h3 class="timeline-title font-serif-cn">唐代普及</h3>
+                        <p class="timeline-description">
+                            豆浆在唐代开始普及，成为民间常见的早餐饮品，并传入日本等周边国家。
+                        </p>
+                        <div class="timeline-details">
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                唐代是中国饮食文化的黄金时期，豆浆作为一种营养丰富的饮品，在长安、洛阳等大都市的早市上随处可见。鉴真东渡时，将豆浆制作技术传入日本，为日本"豆乳"文化奠定了基础。
+                            </p>
+                            <div class="mt-4 text-xs text-ancient-brown">
+                                历史影响：奠定了东亚豆浆文化圈
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Timeline Item 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker" data-year="宋代"></div>
+                    <div class="timeline-content" onclick="toggleTimelineDetails(this)">
+                        <div class="timeline-year">公元960-1279年</div>
+                        <h3 class="timeline-title font-serif-cn">宋代发展</h3>
+                        <p class="timeline-description">
+                            宋代豆浆制作工艺更加精细，出现了专门的豆浆铺子，形成了南北不同的口味偏好。
+                        </p>
+                        <div class="timeline-details">
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                《东京梦华录》记载了北宋都城汴梁的豆浆店铺："每日清晨，豆香四溢，男女老幼排队等候。"南方偏爱甜味豆浆，北方则喜欢咸味，这种南北差异至今仍然存在。
+                            </p>
+                            <div class="mt-4 text-xs text-ancient-brown">
+                                文化特色：南甜北咸的口味分化形成
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Timeline Item 4 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker" data-year="明清"></div>
+                    <div class="timeline-content" onclick="toggleTimelineDetails(this)">
+                        <div class="timeline-year">公元1368-1912年</div>
+                        <h3 class="timeline-title font-serif-cn">明清传承</h3>
+                        <p class="timeline-description">
+                            明清时期，豆浆制作技艺在民间广泛传承，各种豆制品层出不穷，形成了完整的产业链。
+                        </p>
+                        <div class="timeline-details">
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                明代《天工开物》详细记载了豆浆和豆腐的制作工艺。清代，豆浆铺子已经成为城市街景的重要组成部分，"清晨一碗豆浆，配两根油条"的生活方式开始形成。
+                            </p>
+                            <div class="mt-4 text-xs text-ancient-brown">
+                                技术突破：制作工艺标准化、产业化
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Timeline Item 5 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker" data-year="现代"></div>
+                    <div class="timeline-content" onclick="toggleTimelineDetails(this)">
+                        <div class="timeline-year">20世纪至今</div>
+                        <h3 class="timeline-title font-serif-cn">现代工业化</h3>
+                        <p class="timeline-description">
+                            20世纪初，豆浆开始工业化生产。现代科技创新使豆浆成为全球性的健康饮品。
+                        </p>
+                        <div class="timeline-details">
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                1908年，中国第一家豆浆工厂在上海成立。1980年代后，随着健康意识提升，豆浆在全球范围内受到重视。现代豆浆机、无菌包装等技术的应用，让这一传统饮品焕发新生。
+                            </p>
+                            <div class="mt-4 text-xs text-ancient-brown">
+                                全球影响：从中国传统饮品到世界健康食品
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Regional Culture -->
+        <section class="mb-20">
+            <h2 class="font-serif-cn text-3xl font-bold text-ancient-brown text-center mb-16">
+                地域文化
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="region-card rounded-xl p-6">
+                    <div class="w-16 h-16 bg-ancient-brown rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white font-bold text-xl">北</span>
+                    </div>
+                    <h3 class="font-serif-cn text-xl font-semibold text-ancient-brown text-center mb-4">
+                        北方咸豆浆
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        北方地区偏爱咸味豆浆，常加入酱油、醋、葱花、榨菜等调料，口感咸香开胃。配以油条、包子，成为经典的北方早餐组合。
+                    </p>
+                    <div class="text-xs text-ancient-brown">
+                        代表地区：北京、天津、山东
+                    </div>
+                </div>
+                
+                <div class="region-card rounded-xl p-6">
+                    <div class="w-16 h-16 bg-health-green rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white font-bold text-xl">南</span>
+                    </div>
+                    <h3 class="font-serif-cn text-xl font-semibold text-health-green text-center mb-4">
+                        南方甜豆浆
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        南方地区喜欢甜味豆浆，加入白糖、红糖或蜂蜜，口感香甜醇厚。常与粽子、小笼包搭配，体现南方饮食的精致。
+                    </p>
+                    <div class="text-xs text-health-green">
+                        代表地区：上海、江苏、浙江
+                    </div>
+                </div>
+                
+                <div class="region-card rounded-xl p-6">
+                    <div class="w-16 h-16 bg-sky-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white font-bold text-xl">台</span>
+                    </div>
+                    <h3 class="font-serif-cn text-xl font-semibold text-sky-blue text-center mb-4">
+                        台湾豆浆红茶
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        台湾创新将豆浆与红茶结合，创造出独特的"豆浆红茶"饮品。茶香与豆香融合，口感层次丰富，成为台湾特色。
+                    </p>
+                    <div class="text-xs text-sky-blue">
+                        代表地区：台北、台中、高雄
+                    </div>
+                </div>
+                
+                <div class="region-card rounded-xl p-6">
+                    <div class="w-16 h-16 bg-lemon-yellow rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-gray-700 font-bold text-xl">粤</span>
+                    </div>
+                    <h3 class="font-serif-cn text-xl font-semibold text-gray-700 text-center mb-4">
+                        潮汕豆浆油条
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        潮汕地区的豆浆配油条是当地经典早餐。油条酥脆，豆浆醇厚，两者搭配相得益彰，体现了潮汕饮食文化的精髓。
+                    </p>
+                    <div class="text-xs text-gray-600">
+                        代表地区：汕头、潮州、揭阳
+                    </div>
+                </div>
+                
+                <div class="region-card rounded-xl p-6">
+                    <div class="w-16 h-16 bg-red-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white font-bold text-xl">川</span>
+                    </div>
+                    <h3 class="font-serif-cn text-xl font-semibold text-red-400 text-center mb-4">
+                        川味麻辣豆花
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        四川地区的豆花加入了麻辣元素，辣椒油、花椒粉与豆花结合，创造出独特的川味豆花，辣而不燥，麻而不苦。
+                    </p>
+                    <div class="text-xs text-red-400">
+                        代表地区：成都、重庆、绵阳
+                    </div>
+                </div>
+                
+                <div class="region-card rounded-xl p-6">
+                    <div class="w-16 h-16 bg-purple-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white font-bold text-xl">港</span>
+                    </div>
+                    <h3 class="font-serif-cn text-xl font-semibold text-purple-400 text-center mb-4">
+                        港式豆浆甜品
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                        香港将豆浆与甜品文化结合，创造出豆浆布丁、豆浆慕斯等精致甜品，体现了港式饮食的创新精神。
+                    </p>
+                    <div class="text-xs text-purple-400">
+                        代表地区：香港岛、九龙、新界
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Celebrity Stories -->
+        <section class="mb-16">
+            <h2 class="font-serif-cn text-3xl font-bold text-ancient-brown text-center mb-16">
+                名人轶事
+            </h2>
+            
+            <div class="max-w-4xl mx-auto space-y-12">
+                <div class="bg-warm-beige rounded-xl p-8">
+                    <div class="flex items-start space-x-6">
+                        <div class="w-20 h-20 bg-ancient-brown rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-serif-cn text-2xl font-bold">刘</span>
+                        </div>
+                        <div>
+                            <h3 class="font-serif-cn text-2xl font-semibold text-ancient-brown mb-2">
+                                刘安 - 豆浆之父
+                            </h3>
+                            <p class="text-sm text-gray-500 mb-4">西汉淮南王</p>
+                            <p class="text-gray-600 leading-relaxed">
+                                刘安不仅是豆浆的发明者，更是《淮南子》的作者。相传他在八公山修炼时，为了给母亲治病，用黄豆磨成浆汁，加入卤水凝固，既制成了豆腐，也发现了豆浆的美味。这一偶然的发现，成就了中华饮食文化的重要组成部分。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-warm-beige rounded-xl p-8">
+                    <div class="flex items-start space-x-6">
+                        <div class="w-20 h-20 bg-health-green rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-serif-cn text-2xl font-bold">李</span>
+                        </div>
+                        <div>
+                            <h3 class="font-serif-cn text-2xl font-semibold text-health-green mb-2">
+                                李时珍 - 豆浆养生
+                            </h3>
+                            <p class="text-sm text-gray-500 mb-4">明代医学家</p>
+                            <p class="text-gray-600 leading-relaxed">
+                                李时珍在《本草纲目》中详细记载了豆浆的药用价值："豆浆，性平味甘，利水下气，制诸风热，解诸毒。"他的医学研究为豆浆的养生保健功能提供了科学依据，影响了后世的中医养生理念。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-warm-beige rounded-xl p-8">
+                    <div class="flex items-start space-x-6">
+                        <div class="w-20 h-20 bg-sky-blue rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white font-serif-cn text-2xl font-bold">胡</span>
+                        </div>
+                        <div>
+                            <h3 class="font-serif-cn text-2xl font-semibold text-sky-blue mb-2">
+                                胡适 - 豆浆情结
+                            </h3>
+                            <p class="text-sm text-gray-500 mb-4">现代文学家</p>
+                            <p class="text-gray-600 leading-relaxed">
+                                胡适先生在美国留学期间，常常怀念家乡的豆浆味道。他在日记中写道："在美国最想念的，就是家乡清晨的那碗热豆浆。"这种乡愁体现了豆浆在中国人心中的文化地位和情感价值。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-to-top" onclick="scrollToTop()">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+        </svg>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-ancient-brown text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <img src="./resources/logo.png" alt="豆香传" class="h-8 w-8 opacity-80">
+                <span class="font-serif-cn text-xl font-semibold">豆香传</span>
+            </div>
+            <p class="text-sm opacity-80">
+                © 2025 豆香传 (Bean Aroma Legacy). 保留所有权利。
+            </p>
+            <p class="text-xs opacity-60 mt-2">
+                一杯豆浆，敬过往，连世界，创未来
+            </p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
