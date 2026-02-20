@@ -1,26 +1,281 @@
+/* v4 引入方式 */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* 
+   使用 @theme 定义主题变量
+   注意：变量名必须以 -- 开头，Tailwind 会自动将其转换为类名
+   例如：--color-warm-beige 会生成 bg-warm-beige, text-warm-beige 等
+*/
+@theme {
+  --color-soy-white: #F5F5DC;
+  --color-warm-beige: #FDF5E6;
+  --color-ancient-brown: #A67B5B;
+  --color-health-green: #8FBC8F;
+  --color-lemon-yellow: #FFFACD;
+  --color-sky-blue: #87CEEB;
+  --color-text-dark: #4A4A4A;
+
+  /* 定义字体 */
+  --font-serif-cn: var(--font-noto-serif-sc), serif;
+  --font-sans-cn: var(--font-noto-sans-sc), sans-serif;
+
+  /* 定义动画 (替代 tailwind.config.ts 中的 keyframes) */
+  --animate-fade-in: fadeIn 0.5s ease-out;
+  --animate-fade-in-up: fadeInUp 0.6s ease-out;
+  --animate-slide-up: slideUp 0.6s ease-out;
+  --animate-pulse-slow: pulse-slow 2s ease-in-out infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* 
+   Keyframes 定义放在 @theme 外部或内部均可，通常放在外部标准 CSS 中
+*/
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@media (prefers-color-scheme: dark) {
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* 
+   保留原有的 :root 变量用于 JS 或其他用途，
+   但 Tailwind 类名会优先使用 @theme 中的定义
+*/
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --soy-white: #F5F5DC;
+    --warm-beige: #FDF5E6;
+    --ancient-brown: #A67B5B;
+    --health-green: #8FBC8F;
+    --lemon-yellow: #FFFACD;
+    --sky-blue: #87CEEB;
+    --text-dark: #4A4A4A;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* 组件层保持不变 */
+@layer components {
+  .team-card {
+    @apply bg-gradient-to-br from-warm-beige/80 to-white/90 border border-ancient-brown/10;
+  }
+  
+  .contact-card {
+    @apply bg-gradient-to-br from-health-green/10 to-white/90 border border-health-green/20;
+  }
+  
+  .story-card {
+    @apply bg-gradient-to-br from-warm-beige to-white/90 border border-ancient-brown/10;
+  } 
+  
+  .timeline-container {
+    @apply relative max-w-6xl mx-auto;
+  }
+  
+  .timeline-line {
+    @apply absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-ancient-brown to-health-green -translate-x-1/2 z-0;
+  }
+  
+  .timeline-item {
+    @apply relative mb-12 opacity-0 translate-y-4 transition-all duration-700;
+  }
+  
+  .timeline-item.animate {
+    @apply opacity-100 translate-y-0;
+  }
+  
+  .timeline-marker {
+    @apply absolute left-1/2 top-6 w-5 h-5 bg-ancient-brown border-4 border-warm-beige rounded-full -translate-x-1/2 cursor-pointer transition-all duration-300 z-10;
+  }
+  
+  .timeline-marker:hover {
+    @apply bg-health-green scale-125;
+  }
+  
+  .timeline-marker.active {
+    @apply bg-health-green scale-150 shadow-lg shadow-health-green/50;
+  }
+  
+  .timeline-content {
+    @apply bg-warm-beige p-6 rounded-xl shadow-lg cursor-pointer transition-all duration-300;
+  }
+  
+  .timeline-content:hover {
+    @apply -translate-y-2 shadow-2xl;
+  }
+  
+  .timeline-year {
+    @apply text-xl font-bold text-ancient-brown mb-2;
+  }
+  
+  .timeline-title {
+    @apply text-lg font-semibold text-text-dark mb-3;
+  }
+  
+  .timeline-description {
+    @apply text-gray-600 leading-relaxed;
+  }
+  
+  .timeline-details {
+    @apply mt-4 pt-4 border-t border-ancient-brown/20;
+  }
+
+  .timeline-item:nth-child(odd) .timeline-content {
+    @apply mr-[55%] text-right;
+  }
+  
+  .timeline-item:nth-child(even) .timeline-content {
+    @apply ml-[55%] text-left;
+  }
+  
+  .region-card {
+    @apply bg-gradient-to-br from-warm-beige to-white/90 border border-ancient-brown/10;
+  }
+  
+  .tutorial-card {
+    @apply bg-gradient-to-br from-lemon-yellow/30 to-white/90 border border-lemon-yellow/50;
+  }
+  
+  .recipe-card {
+    @apply bg-gradient-to-br from-health-green/10 to-white/90 border border-health-green/20;
+  }
+  
+  .work-card {
+    @apply bg-gradient-to-br from-warm-beige/80 to-white/90 border border-ancient-brown/10;
+  }
+  
+  .filter-btn {
+    @apply transition-all duration-300;
+  }
+  
+  .filter-btn.active {
+    @apply bg-health-green text-white;
+  }
+  
+  .like-btn {
+    @apply transition-all duration-300;
+  }
+  
+  .like-btn:hover {
+    @apply scale-110;
+  }
+  
+  .like-btn.liked {
+    @apply text-red-500;
+  }
+  
+  .challenge-progress {
+    @apply bg-gradient-to-r from-health-green to-sky-blue;
+  }
+  
+  .nutrition-card {
+    @apply bg-gradient-to-br from-sky-blue/10 to-white/90 border border-sky-blue/20;
+  }
+  
+  .health-card {
+    @apply bg-gradient-to-br from-health-green/10 to-white/90 border border-health-green/20;
+  }
+  
+  .test-card {
+    @apply bg-gradient-to-br from-lemon-yellow/30 to-white/90 border border-lemon-yellow/50;
+  }
+  
+  .quiz-option {
+    @apply transition-all duration-300 cursor-pointer hover:bg-health-green/10 hover:translate-x-2;
+  }
+  
+  .quiz-option.selected {
+    @apply bg-health-green text-white;
+  }
+  
+  .quiz-container {
+    @apply hidden;
+  }
+  
+  .quiz-container.active {
+    @apply block animate-fade-in;
+  }
+  
+  .progress-bar {
+    @apply bg-health-green transition-all duration-500;
+  }
+
+  .btn-primary {
+    @apply bg-ancient-brown text-white transition-all duration-300 hover:bg-ancient-brown/90 hover:-translate-y-[2px] hover:shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-health-green text-white transition-all duration-300 hover:bg-health-green/90 hover:-translate-y-[2px] hover:shadow-lg;
+  }
+  
+  .form-input {
+    @apply border-2 border-gray-200 rounded-lg focus:border-ancient-brown focus:ring-2 focus:ring-ancient-brown/20 transition-all duration-300;
+  }
+  
+  .glass-effect {
+    @apply backdrop-blur-sm bg-white/20 border border-white/20;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-[5px] hover:shadow-xl;
+  }
+  
+  .category-card {
+    @apply bg-gradient-to-br from-warm-beige to-white/90 border border-ancient-brown/10;
+  }
+  
+  .creative-card {
+    @apply bg-gradient-to-br from-lemon-yellow/30 to-white/90 border border-lemon-yellow/50;
+  }
+
+  .contact-type-option {
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:shadow-ancient-brown/15;
+  }
+
+  .contact-type-option input:checked + div {
+    opacity: 1;
+  }
+
+  .social-icon {
+    @apply transition-all duration-300 hover:-translate-y-2;
+  }
+
+  .social-link {
+    @apply transition-all duration-300 hover:-translate-y-3;
+  }
+}
+
+@layer utilities {
+  .masonry-grid {
+    column-count: 1;
+    column-gap: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .masonry-grid {
+      column-count: 2;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .masonry-grid {
+      column-count: 3;
+    }
+  }
+  
+  .masonry-item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
 }
